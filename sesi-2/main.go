@@ -4,7 +4,9 @@ import "fmt"
 
 func main() {
 	fmt.Println("--- Sesi 2 ---")
+	miniChallengeTwo()
 
+	/**
 	// 1. Array
 	// has fixed length
 
@@ -81,4 +83,7 @@ func main() {
 	// 4. Pointer
 
 	// ...
+
+	**/
+
 }
