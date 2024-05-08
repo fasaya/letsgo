@@ -16,30 +16,29 @@ func minChallengeTiga() {
 
 	// Check if there is at least one command-line argument
 	if len(os.Args) < 2 {
-		fmt.Println("Please provide a name as a command-line argument.")
+		fmt.Println("Please provide a name or ID as a command-line argument.")
 		return
 	}
 
-	name := os.Args[1]
+	input := os.Args[1]
 
-	var people = []Person{
-		{"Budi", "Jakarta", "Programmer", "Belajar lebih banyak"},
-		{"Joko", "Bandung", "Pengusaha", "Banyak waktu kosong"},
-		{"Rudi", "Makassar", "Mahasiswa", "Mau cari kerja yang menggunakan bahasa go"},
-		{"Andi", "Malang", "Programmer", "Mau cari kerja yang menggunakan bahasa go"},
-		{"Andi", "Jakarta", "Mahasiswa", "Belajar lebih banyak"},
+	var people = map[string]Person{
+		"1": {"Budi", "Jakarta", "Programmer", "Belajar lebih banyak"},
+		"2": {"Joko", "Bandung", "Pengusaha", "Banyak waktu kosong"},
+		"3": {"Rudi", "Makassar", "Mahasiswa", "Mau cari kerja yang menggunakan bahasa go"},
+		"4": {"Andi", "Malang", "Programmer", "Mau cari kerja yang menggunakan bahasa go"},
+		"5": {"Andi", "Jakarta", "Mahasiswa", "Belajar lebih banyak"},
 	}
 
-	var foundPeople = []Person{}
+	var foundPeople = map[string]Person{}
 
 	// fmt.Println("People", people)
 
-	for _, value := range people {
-
-		if name == value.name {
+	for key, value := range people {
+		if input == value.name || input == key {
 			// fmt.Println("value", value.name)
 			// append value to foundPeople
-			foundPeople = append(foundPeople, value)
+			foundPeople[key] = value
 		}
 
 	}
@@ -49,11 +48,12 @@ func minChallengeTiga() {
 		return
 	}
 
-	for _, value := range foundPeople {
-		fmt.Println("Nama :", value.name)
-		fmt.Println("Alamat: ", value.address)
-		fmt.Println("Pekerjaan: ", value.job)
-		fmt.Println("Alasan: ", value.reason)
+	for key, value := range foundPeople {
+		fmt.Println("ID   		:", key)
+		fmt.Println("Nama 		:", value.name)
+		fmt.Println("Alamat		:", value.address)
+		fmt.Println("Pekerjaan	:", value.job)
+		fmt.Println("Alasan		:", value.reason)
 		fmt.Println("--------------------------------------------------------------------------")
 	}
 }
