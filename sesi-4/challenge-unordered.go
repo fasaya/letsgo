@@ -23,7 +23,7 @@ func (j Angka) bisa() int {
 }
 
 func challengeUnordered() {
-	fmt.Println("--- start ---")
+	fmt.Println("--- Unordered ---")
 
 	var wg sync.WaitGroup
 
