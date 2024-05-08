@@ -1,6 +1,7 @@
 package main
 
 func main() {
-	catatan()
+	// catatan()
 	challengeUnordered()
+	// challengeOrdered()
 }

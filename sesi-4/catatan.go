@@ -36,6 +36,8 @@ func (p persegi) keliling() float64 {
 
 func catatan() {
 
+	fmt.Println("---- Notes ----")
+
 	var lingkaran1 hitung = lingkaran{14, 7}
 	var persegi1 hitung = persegi{5}
 
