@@ -2,24 +2,25 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"sync"
 )
 
 type aksi2 interface {
-	coba() int
-	bisa() int
+	coba() string
+	bisa() string
 }
 
 type Angka2 struct {
 	angka int
 }
 
-func (j Angka2) coba() int {
-	return j.angka
+func (j Angka2) coba() string {
+	return "[coba] " + strconv.Itoa(j.angka)
 }
 
-func (j Angka2) bisa() int {
-	return j.angka
+func (j Angka2) bisa() string {
+	return "[bisa] " + strconv.Itoa(j.angka)
 }
 
 func challengeOrdered() {
@@ -29,13 +30,9 @@ func challengeOrdered() {
 	var mu sync.Mutex
 
 	for i := 1; i <= 4; i++ {
-		wg.Add(1)
+		wg.Add(2)
 		go fungsiSatuOrdered(&wg, i, &mu)
-	}
-
-	for j := 1; j <= 4; j++ {
-		wg.Add(1)
-		go fungsiDuaOrdered(&wg, j, &mu)
+		go fungsiDuaOrdered(&wg, i, &mu)
 	}
 
 	wg.Wait()
@@ -43,18 +40,22 @@ func challengeOrdered() {
 
 func fungsiSatuOrdered(wg *sync.WaitGroup, i int, mu *sync.Mutex) {
 	defer wg.Done()
-	var myAction aksi2 = Angka2{i}
 
 	mu.Lock()
-	fmt.Println("[coba]", myAction.coba())
+
+	var myAction aksi2 = Angka2{i}
+	fmt.Println(myAction.coba())
+
 	mu.Unlock()
 }
 
 func fungsiDuaOrdered(wg *sync.WaitGroup, i int, mu *sync.Mutex) {
 	defer wg.Done()
-	var myAction aksi2 = Angka2{i}
 
 	mu.Lock()
-	fmt.Println("[bisa]", myAction.bisa())
+
+	var myAction aksi2 = Angka2{i}
+	fmt.Println(myAction.bisa())
+
 	mu.Unlock()
 }
