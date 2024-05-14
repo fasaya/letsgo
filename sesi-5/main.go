@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"text/template"
@@ -10,14 +9,15 @@ import (
 type User struct {
 	ID      int
 	Email   string
+	Name    string
 	Address string
 	Job     string
 }
 
 var users = []User{
-	{ID: 1, Email: "Walter Goyette MD", Address: "Jakarta", Job: "Direct Security Associate"},
-	{ID: 2, Email: "Laura Hirthe", Address: "Bandung", Job: "Corporate Data Officer"},
-	{ID: 3, Email: "Milton Wisoky", Address: "Surabaya", Job: "Direct Operations Consultant"},
+	{ID: 1, Email: "Pink_Goldner@hotmail.com", Name: "Walter Goyette MD", Address: "Jakarta", Job: "Direct Security Associate"},
+	{ID: 2, Email: "Jordane67@gmail.com", Name: "Laura Hirthe", Address: "Bandung", Job: "Corporate Data Officer"},
+	{ID: 3, Email: "Christopher_Roob32@gmail.com", Name: "Milton Wisoky", Address: "Surabaya", Job: "Direct Operations Consultant"},
 }
 
 var PORT = ":9090"
@@ -45,24 +45,52 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func getUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	if r.Method == "GET" {
-		json.NewEncoder(w).Encode(users)
+		tpl, err := template.ParseFiles("detail-page.html")
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		email := r.URL.Query().Get("email")
+
+		user, err := getUserByEmail(email)
+
+		if err != nil {
+			showNotFoundPage(w)
+			return
+		}
+
+		tpl.Execute(w, user)
 		return
 	}
 
-	// using html/template package
-	// if r.Method == "GET" {
-	// 	tpl, err := template.ParseFiles("template.html")
-	// 	if err != nil {
-	// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 		return
-	// 	}
-
-	// 	tpl.Execute(w, users)
-	// 	return
-	// }
-
 	http.Error(w, "Invalid method", http.StatusBadRequest)
+}
+
+func getUserByEmail(email string) (*User, error) {
+	for _, user := range users {
+		if user.Email == email {
+			return &user, nil
+		}
+	}
+	return nil, fmt.Errorf("user with email %s not found", email)
+}
+
+func showNotFoundPage(w http.ResponseWriter) {
+
+	tpl, err := template.ParseFiles("notfound-page.html")
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	tpl.Execute(w, struct{}{})
 }
