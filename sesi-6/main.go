@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"golang-for-women/sesi-6/helpers"
 	"golang-for-women/sesi-6/models"
+	"golang-for-women/sesi-6/types"
 	"log"
 	"net/http"
 	"os"
@@ -19,12 +21,6 @@ var (
 	db  *sql.DB
 	err error
 )
-
-type Response struct {
-	Message string `json:"message"`
-	Data    any    `json:"data"`
-	Error   bool   `json:"error"`
-}
 
 var PORT = ":9090"
 
@@ -152,7 +148,7 @@ func createProduct(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Printf("Data created: %+v\n", product)
 
-		results := Response{
+		results := types.Response{
 			Error:   false,
 			Message: "Success creating product",
 			Data:    product,
@@ -176,14 +172,14 @@ func updateProduct(w http.ResponseWriter, r *http.Request) {
 
 		// check if id empty
 		if id == "" {
-			http.Error(w, "ID is required", http.StatusBadRequest)
+			helpers.HandleErrorResponse(w, "ID is required", 400)
 			return
 		}
 
 		// Decode the JSON body into the struct
 		err := json.NewDecoder(r.Body).Decode(&product)
 		if err != nil {
-			http.Error(w, "Unable to parse JSON body", http.StatusBadRequest)
+			helpers.HandleErrorResponse(w, "Unable to parse JSON body", 400)
 			return
 		}
 
@@ -197,35 +193,27 @@ func updateProduct(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-		count, err := result.RowsAffected()
+		// Get affected rows
+		_, err = result.RowsAffected()
 		if err != nil {
-			panic(err)
+			helpers.HandleErrorResponse(w, "ID not found", 404)
+			return
+
+			// panic(err)
 		}
-		fmt.Println("Rows affected:", count, "row(s)")
+		// fmt.Println("Rows affected:", count, "row(s)")
 
 		// Retrieve the inserted row using the id
 		sqlRetrieve := `SELECT * FROM products WHERE id = ?`
 
 		err = db.QueryRow(sqlRetrieve, id).Scan(&product.ID, &product.Name, &product.CreatedAt, &product.UpdatedAt)
 		if err != nil {
-			w.WriteHeader(404)
-			results := Response{
-				Error:   true,
-				Message: "ID not found",
-			}
-			json.NewEncoder(w).Encode(results)
+			helpers.HandleErrorResponse(w, "ID not found", 404)
 			return
 			// panic(err)
 		}
 
-		// fmt.Printf("Data updated: %+v\n", product)
-
-		results := Response{
-			Error:   false,
-			Message: "Success update product",
-			Data:    product,
-		}
-
-		json.NewEncoder(w).Encode(results)
+		helpers.HandleSuccessfulResponse(w, "Success update product", product, 200)
+		return
 	}
 }
