@@ -19,7 +19,7 @@ func HandleErrorResponse(w http.ResponseWriter, message string, statusCode int) 
 func HandleSuccessfulResponse(w http.ResponseWriter, message string, data interface{}, statusCode int) {
 	w.WriteHeader(statusCode)
 	response := types.Response{
-		Error:   true,
+		Error:   false,
 		Message: message,
 		Data:    data,
 	}
