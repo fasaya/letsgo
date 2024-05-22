@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"golang-for-women/sesi-6/config"
-	product_controller "golang-for-women/sesi-6/controllers"
+	"golang-for-women/sesi-6/controllers"
 	"log"
-	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -24,22 +22,20 @@ func main() {
 	// Set the database connection in the config package
 	config.DB = db
 
-	// fmt.Println("Successfully connected to database", db_name)
+	// Products
+	// controllers.CreateProduct("Meja makan")
+	// controllers.UpdateProduct(1, "Side table")
+	// controllers.GetProductById(2)
 
-	http.HandleFunc("/", product_controller.Index)
-	http.HandleFunc("/products", product_controller.GetProductWithVariant)
-	http.HandleFunc("/product/update/", product_controller.UpdateProduct)
-	http.HandleFunc("/product/", product_controller.GetProductById)
-	http.HandleFunc("/product", product_controller.CreateProduct)
+	// Variants
+	// variantData := models.Variant{
+	// 	Name:      "Kayu jati",
+	// 	Quantity:  4,
+	// 	ProductID: 11,
+	// }
+	// controllers.CreateVariant(variantData)
+	// controllers.UpdateVariantById(1, variantData)
+	// controllers.DeleteVariantById(2)
 
-	fmt.Println("Application is listening on port", PORT, "and successfully connected to database.")
-	http.ListenAndServe(PORT, nil)
-
-	// createProduct()
-	// updateProduct()
-	// getProductById()
-	// createVariant()
-	// updateVariantById()
-	// deleteVariantById()
-	// getProductWithVariant()
+	controllers.GetProductWithVariant()
 }
