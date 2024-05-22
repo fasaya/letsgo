@@ -23,6 +23,7 @@ func main() {
 	config.DB = db
 
 	// Products
+	controllers.GetProductWithVariant()
 	// controllers.CreateProduct("Meja makan")
 	// controllers.UpdateProduct(1, "Side table")
 	// controllers.GetProductById(2)
@@ -37,5 +38,4 @@ func main() {
 	// controllers.UpdateVariantById(1, variantData)
 	// controllers.DeleteVariantById(2)
 
-	controllers.GetProductWithVariant()
 }

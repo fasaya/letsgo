@@ -27,10 +27,42 @@ func GetProductWithVariant() {
 			panic(err)
 		}
 
+		product.Variants = getVariantsByProductId(product.ID)
+
 		products = append(products, product)
 	}
 
-	fmt.Printf("DAll data: %+v\n", products)
+	// fmt.Printf("All data: %+v\n", products)
+
+	for _, product := range products {
+		fmt.Printf("%+v\n", product)
+	}
+
+}
+
+func getVariantsByProductId(productID int) []models.Variant {
+	var variants = []models.Variant{}
+
+	sqlStatement := `SELECT * from variants WHERE id=?`
+
+	rows, err := config.DB.Query(sqlStatement, productID)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var variant = models.Variant{}
+
+		err = rows.Scan(&variant.ID, &variant.Name, &variant.Quantity, &variant.ProductID, &variant.CreatedAt, &variant.UpdatedAt)
+		if err != nil {
+			panic(err)
+		}
+
+		variants = append(variants, variant)
+	}
+
+	return variants
 }
 
 func CreateProduct(productName string) {
